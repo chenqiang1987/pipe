@@ -334,6 +334,9 @@ export default {
       await this[types.GET_MAINTAIN_LIST](this.filter);
       await this[[types.GET_ALL_USERS]]({ roleId: 2 });
     } catch (e) {
+
+      if(e.msg.lastIndexOf("重新登陆")!=-1)
+        this.$router.push("/login");
       this.$message.error(e.msg)
     }
   },
@@ -388,6 +391,7 @@ export default {
         repairId: this.filter.repairId,
       };
       this[types.GET_MAINTAIN_LIST](filter).catch((e) => {
+
         this.$message.error(e.msg);
       });
     },

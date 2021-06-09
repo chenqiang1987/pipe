@@ -18,7 +18,7 @@
           </el-input>
         </el-col>
         <el-col :span="4" class="btn">
-          <el-button icon="el-icon-plus" @click="addVisible = true;">添加</el-button>
+          <!-- <el-button icon="el-icon-plus" @click="addVisible = true;">添加</el-button> -->
         </el-col>
       </el-row>
       <el-table
@@ -39,8 +39,8 @@
         ></el-table-column>
         <el-table-column prop="userName" label="用户名" align="center"></el-table-column>
         <el-table-column min-width="120" prop="telPhone" label="手机号" align="center"></el-table-column>
-        <el-table-column min-width="100" prop="createTime" label="注册时间" align="center"></el-table-column>
-        <el-table-column prop="enable" label="状态" align="center"></el-table-column>
+        <el-table-column min-width="100" prop="createTime" label="注册日期" align="center" :formatter="dateFormatter"></el-table-column>
+        <!-- <el-table-column prop="enable" label="状态" align="center"></el-table-column> -->
         <el-table-column width="260px" label="操作" align="center">
           <template slot-scope="scope">
             <el-button
@@ -51,7 +51,7 @@
               @click="onAssignShow(scope.row)"
             >配置专长</el-button>
             <el-button size="mini" plain type="primary" @click="onEdit(scope.row)">编辑</el-button>
-            <el-button size="mini" type="danger" plain @click="handleDelete(scope.row)">删除</el-button>
+            <!-- <el-button size="mini" type="danger" plain @click="handleDelete(scope.row)">删除</el-button> -->
           </template>
         </el-table-column>
       </el-table>
@@ -459,6 +459,9 @@ export default {
           this.$message.error(err.msg);
         });
     },
+    dateFormatter(row,column){
+       return this.$moment(row.createTime).format("YYYY-MM-DD")
+    }
   },
 };
 </script>

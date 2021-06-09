@@ -11,7 +11,7 @@
  
      
    <br>
-       <el-button type="primary" size="small" @click="patrol()" style="margin: 0 0 20px 0; float: right;">恢复自动</el-button>
+       <el-button type="primary" size="small" @click="start()" style="margin: 0 0 20px 0; float: right;">恢复自动</el-button>
         <el-button type="primary" size="small" @click="standby()" style="margin: 0 0 20px 0; float: right;">确定待机</el-button>
    
 
@@ -33,6 +33,7 @@ export default {
   methods:{
     ...mapActions({
       [types.MACHINE_STOP]: `machine/${[types.MACHINE_STOP]}`,
+      [types.MACHINE_START]: `machine/${[types.MACHINE_START]}`
     }),
     standby(){
 
@@ -46,9 +47,9 @@ export default {
         });
       
     },
-     patrol(){
+     start(){
 
-      this[types.MACHINE_STOP](1)
+      this[types.MACHINE_START](1)
         .then((data) => {
         
           console.log(data)

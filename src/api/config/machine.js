@@ -9,6 +9,7 @@ export default {
     setHeart: '/machine/authc/setHeart', //心跳频率设置：每隔多少秒发送一次检测数据
     setPeriod: '/machine/authc/setPeriod', //设置巡检周期:每隔多少分钟巡检一次
     setSection: '/machine/authc/setSection', //半自动设置巡检区间
-    start: '/machine/authc/start', //启动机器人
+    start: '/machine/authc/callPatrol', //启动机器人
     stop: '/machine/authc/standby', //停止机器人
+    edit: '/machine/authc/edit' //修改机器人
 }

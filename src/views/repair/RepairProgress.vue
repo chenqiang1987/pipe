@@ -18,7 +18,7 @@
             </el-form-item>
             <el-image
               style="width: 150px; height: 100px"
-              :src="details.imgsUrl[0]"
+             :src="details.imgsUrl[0]"
               :preview-src-list="[details.imgsUrl]"
             ></el-image>
           </el-form>
@@ -100,6 +100,13 @@ export default {
   },
   created() {
     this.details = getSession("curOrder");
+  
+    var imgsUrl=this.details.imgsUrl;
+ 
+ debugger
+    if(imgsUrl===null){
+      this.details.imgsUrl=[];
+    }
   },
   methods: {
     ...mapMutations({
@@ -174,8 +181,9 @@ export default {
           this.$message.error("提交失败！");
         }
       }
-    },
+    }
   },
+ 
 };
 </script>
 

@@ -70,6 +70,34 @@ export default {
       } catch (e) {
         return Promise.reject(e);
       }
+    },
+    async [types.MACHINE_START]({
+      commit
+    }, payload) {
+      try {
+        const {
+          data
+        } = await machine.start(payload);
+        return Promise.resolve(data)
+      } catch (e) {
+        return Promise.reject(e);
+      }
+    },
+    async [types.EDIT_MACHINE]({
+      commit
+    }, payload) {
+      try {
+        const {
+          data
+        } = await machine.edit(payload);
+        return Promise.resolve(data)
+      } catch (e) {
+        
+        console.log(JSON.stringify(e))
+        return Promise.reject(e);
+      }
     }
   }
 }
+ 
+

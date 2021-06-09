@@ -56,6 +56,8 @@ export const SET_ROLE_PERMIT = 'SET_ROLE_PERMIT';
 //machine
 export const ADD_MACHINE = 'ADD_MACHINE';
 
+export const EDIT_MACHINE = 'EDIT_MACHINE';
+
 export const GET_ALL_MACHINES = 'GET_ALL_MACHINES';
 
 export const SET_ALL_MACHINES = 'SET_ALL_MACHINES';
@@ -68,7 +70,7 @@ export const MACHINE_STATE = 'MACHINE_STATE';
 
 export const MACHINE_RECHARGE = 'MACHINE_RECHARGE';
 
-export const MACHINE_START = 'MACHINE_START';
+export const MACHINE_START = 'MACHINE_START';  //启动进入自动巡检状态
 
 export const MACHINE_STOP = 'MACHINE_STOP';   //原地待机 standby指令
 

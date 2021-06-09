@@ -23,7 +23,7 @@
         <el-table-column label="操作" align="center">
           <template slot-scope="scope" class="btn-group">
             <!-- <el-button size="mini" plain type="primary" @click="handleEdit(scope.row)">编辑</el-button> -->
-            <el-button size="mini" plain type="danger" @click="handleDelete(scope.row)">删除</el-button>
+            <!-- <el-button size="mini" plain type="danger" @click="handleDelete(scope.row)">删除</el-button> -->
             <el-button size="mini" plain type="info" @click="onAssignShow(scope.row)">配置权限</el-button>
           </template>
         </el-table-column>

@@ -17,6 +17,9 @@ import 'quill/dist/quill.core.css'
 import 'quill/dist/quill.snow.css'
 import 'quill/dist/quill.bubble.css'
 
+import moment from "moment";
+Vue.prototype.$moment = moment;
+
 Vue.config.productionTip = false
 Vue.prototype.$echarts = echarts
 Vue.use(ElementUI)

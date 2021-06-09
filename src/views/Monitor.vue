@@ -6,7 +6,7 @@
       </ul>
     </div>
     <div class="content">
-      <el-row class="search" :gutter="20">
+      <!-- <el-row class="search" :gutter="20">
         <el-col :span="5">
           <el-input placeholder="输入机器人名称"></el-input>
         </el-col>
@@ -21,22 +21,25 @@
         <el-col :span="4" :offset="5" class="btn">
           <el-button icon="el-icon-plus" @click="addVisible = true">添加</el-button>
         </el-col>
-      </el-row>
+      </el-row> -->
       <el-table :data="robots" stripe style="width: 100vw" max-height="620">
-        <el-table-column prop="serialNumber" label="机器人编号" align="center"></el-table-column>
+        <el-table-column prop="serialNumber" label="机器人编号" align="center" ></el-table-column>
         <el-table-column prop="name" label="名称" align="center"></el-table-column>
-        <el-table-column prop="type" label="类型" align="center"></el-table-column>
+        <!-- <el-table-column prop="type" label="类型" align="center"></el-table-column> -->
+        <el-table-column prop="ip" label="IP地址" align="center"></el-table-column>
+        <el-table-column prop="startLocation" label="开机位置" align="center" :formatter="locationFormatter" ></el-table-column>
         <el-table-column prop="owerId" label="所属单位" align="center"></el-table-column>
         <el-table-column prop label="联系方式" align="center"></el-table-column>
+          
         <el-table-column width="150px" label="操作">
           <template slot-scope="scope">
-            <el-button size="mini" plain type="primary">编辑</el-button>
-            <el-button size="mini" plain type="danger" @click="handleDelete(scope.row)">删除</el-button>
+            <el-button size="mini" plain type="primary"  @click="onEdit(scope.row)">编辑</el-button>
+            <!-- <el-button size="mini" plain type="danger" @click="handleDelete(scope.row)">删除</el-button> -->
           </template>
         </el-table-column>
       </el-table>
 
-      <el-pagination
+      <!-- <el-pagination
         class="paging"
         :current-page="filter.pageNum"
         :page-sizes="[10, 20, 30]"
@@ -45,7 +48,7 @@
         :total="totalRows"
         @size-change="onPageSizeChange"
         @current-change="onPageCurrentChange"
-      ></el-pagination>
+      ></el-pagination> -->
 
       <el-dialog
         title="添加机器人"
@@ -67,6 +70,39 @@
           <el-button type="primary" @click="handleAdd">确 定</el-button>
         </div>
       </el-dialog>
+
+
+      <el-dialog
+        title="编辑机器人"
+        :visible.sync="editVisible"
+        center
+        @close="resetForm('editForm')"
+        :close-on-click-modal="false"
+      >
+        <el-form :model="editForm" ref="editForm" :rules="addRules" label-width="80px">
+          <!-- <el-form-item label="编号" prop="number">
+            <el-input v-model="editForm.number" :readonly="true"></el-input>
+          </el-form-item> -->
+          <el-form-item label="名称" prop="name">
+            <el-input v-model="editForm.name"></el-input>
+          </el-form-item>
+            <el-form-item label="开机位置" prop="startLocation">
+            <el-select v-model="editForm.startLocation" value-key="value">
+              <el-option value="2" label="中间充电桩"></el-option>
+              <el-option value="3" label="北端充电桩"></el-option>
+              <el-option value="1" label="南端充电桩"></el-option>
+            </el-select>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="editVisible = false">取 消</el-button>
+          <el-button type="primary" @click="handEdit">确 定</el-button>
+        </div>
+      </el-dialog>
+
+
+
+
     </div>
   </div>
 </template>
@@ -74,14 +110,17 @@
 <script>
 import { mapState, mapActions } from "vuex";
 import * as types from "../store/action-types";
+import { deepClone } from "@/utils/deepClone";
 
 export default {
   data() {
     return {
       addVisible: false,
+      editVisible: false,
       addForm: {
         number: "",
         name: "",
+        ip:""
       },
       addRules: {
         number: [
@@ -99,10 +138,17 @@ export default {
           },
         ],
       },
+
+      
       filter: {
         pageNum: 1,
         pageSize: 10,
       },
+        editForm: {
+          number: "",
+          name: "",
+          startPosition:""
+      }
     };
   },
   computed: {
@@ -120,6 +166,7 @@ export default {
     ...mapActions({
       [types.GET_ALL_MACHINES]: `machine/${[types.GET_ALL_MACHINES]}`,
       [types.ADD_MACHINE]: `machine/${[types.ADD_MACHINE]}`,
+      [types.EDIT_MACHINE]: `machine/${[types.EDIT_MACHINE]}`,
     }),
     onPageSizeChange(val) {
       console.log(`每页 ${val} 条`);
@@ -175,23 +222,50 @@ export default {
         }
       });
     },
-    handEdit() {
-      try {
-        const { data } = this.$axios.post(
-          "/user/authc/addOrModifyOne",
-          this.editForm
-        );
-        if (data.code === 200) {
-          this.$message.success("编辑成功!");
-          this.editVisible = false;
-          this.getUserList();
-        } else {
-          this.$message.error(data.msg);
-        }
-      } catch (e) {
-        this.$message.error(e);
-      }
+     onEdit(row) {
+   
+      this.editVisible = true;
+      this.editForm = {
+        id: row.id,
+        name: row.name,
+        number: row.serialNumber,
+        startLocation:row.startLocation+""
+       
+      };
     },
+    handEdit() {
+      this.$refs["editForm"].validate((valid) => {
+        if (valid) {
+          try {
+            let params = deepClone(this.editForm);
+            // params.roleIds = [this.editForm.roleIds];
+            debugger
+            this[types.EDIT_MACHINE](params)
+              .then(() => {
+                this.$message.success("编辑成功!");
+                this.editVisible = false;
+                this[types.GET_ALL_MACHINES](this.filter);
+                this.resetForm("editForm");
+              })
+              .catch(() => {
+                this.$message.error("编辑失败!");
+              });
+          } catch (e) {
+            this.$message.error(e);
+          }
+        } else {
+          return false;
+        }
+      });
+    },
+    locationFormatter(row,column){
+      if(row.startLocation===3)
+        return  "北端充电桩"
+         if(row.startLocation===1)
+        return  "南端充电桩"
+         if(row.startLocation===2)
+        return  "中端充电桩"
+    }
   },
 };
 </script>

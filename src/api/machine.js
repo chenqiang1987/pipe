@@ -24,3 +24,5 @@ export const setSection = params => axios.post(config.setSection, params);
 export const start = params => axios.post(config.start, params);
 
 export const stop = params => axios.post(config.stop, params);
+
+export const edit = params => axios.post(config.edit, params);
