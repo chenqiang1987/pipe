@@ -87,13 +87,14 @@ export const routes = [{
       {
         name: 'sys',
         path: '/report',
-        redirect: '/report/orderReport',
+        redirect: '/report/TaskReport',
         component: () => import('@/views/report/Report.vue'),
         meta: {
           title: '系统报表',
           icon: 'icon el-icon-copy-document',
         },
-        children: [{
+        children: [
+          {
             path: '/report/orderReport',
             component: () => import('@/views/report/OrderReport.vue'),
           },

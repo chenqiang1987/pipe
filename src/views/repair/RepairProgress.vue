@@ -8,17 +8,17 @@
           </div>
           <el-form label-width="80px">
             <el-form-item label="执行人">
-              <span>{{details.exeName}}</span>
+              <span>{{ details.exeName }}</span>
             </el-form-item>
             <el-form-item label="损坏内容">
-              <span>{{details.content}}</span>
+              <span>{{ details.content }}</span>
             </el-form-item>
             <el-form-item label="维修人员">
-              <span>{{details.repairName}}</span>
+              <span>{{ details.repairName }}</span>
             </el-form-item>
             <el-image
               style="width: 150px; height: 100px"
-             :src="details.imgsUrl[0]"
+              :src="details.imgsUrl[0]"
               :preview-src-list="[details.imgsUrl]"
             ></el-image>
           </el-form>
@@ -33,7 +33,11 @@
             <div>
               <div class="handler">
                 <span class="handler-text">工单执行</span>
-                <el-button size="medium" style="background: rgb(71,204,237)" @click="start">
+                <el-button
+                  size="medium"
+                  style="background: rgb(71, 204, 237)"
+                  @click="start"
+                >
                   <span style="color: #fff">开始维修</span>
                 </el-button>
               </div>
@@ -53,22 +57,36 @@
             </div>
             <div class="wrapper">
               <p>问题是否解决</p>
-              <el-button type="info" size="medium" :style="successBg" @click="changeStatus(1)">
-                <span style="color: #fff">已解决</span>
-              </el-button>
-              <el-button type="info" size="medium" :style="failedBg" @click="changeStatus(0)">
+              <el-button
+                type="info"
+                size="medium"
+                :style="failedBg"
+                @click="changeStatus(0)"
+              >
                 <span style="color: #fff">未解决</span>
+              </el-button>
+              <el-button
+                type="info"
+                size="medium"
+                :style="successBg"
+                @click="changeStatus(1)"
+              >
+                <span style="color: #fff">已解决</span>
               </el-button>
             </div>
             <el-input
               type="textarea"
               v-model="content"
               placeholder="提交解决反馈"
-              :autosize="{ minRows: 6, maxRows: 12}"
+              :autosize="{ minRows: 6, maxRows: 12 }"
             ></el-input>
             <el-button
               size="medium"
-              style="float: right; margin-top: 2vh; background: rgb(71,204,237)"
+              style="
+                float: right;
+                margin-top: 2vh;
+                background: rgb(71, 204, 237);
+              "
               @click="feedback"
             >
               <span style="color: #fff">提交</span>
@@ -100,12 +118,9 @@ export default {
   },
   created() {
     this.details = getSession("curOrder");
-  
-    var imgsUrl=this.details.imgsUrl;
- 
- debugger
-    if(imgsUrl===null){
-      this.details.imgsUrl=[];
+    var imgsUrl = this.details.imgsUrl;
+    if (imgsUrl === null) {
+      this.details.imgsUrl = [];
     }
   },
   methods: {
@@ -118,8 +133,8 @@ export default {
       [types.UNRESOLVE_REPAIR]: `maintain/${[types.UNRESOLVE_REPAIR]}`,
     }),
     start() {
-      this.$confirm(`工单执行状态 '${this.details.status}'`, {
-        confirmButtonText: "确定",
+      this.$confirm(`当前工单执行状态 '${this.details.status}'`, {
+        confirmButtonText: "确定开始维修",
         cancelButtonText: "取消",
         center: true,
       })
@@ -129,6 +144,7 @@ export default {
             this.$message.success("执行成功！");
             this.details.status = "正在维修中";
             setSession("curOrder", this.details);
+              this.$router.push("/repair")
           } catch (e) {
             console.log(e);
             this.$message.error("执行失败！");
@@ -156,34 +172,48 @@ export default {
       }
     },
     async feedback() {
-      let query = {
-        workId: this.details.id,
-        content: this.content,
-      };
-      if (this.resolved) {
-        try {
-          await this[types.RESOLVE_REPAIR](query);
-          this.$message.success("提交成功！");
-          this.details.status = "已经完成";
-          setSession("curOrder", this.details);
-        } catch (e) {
-          console.log(e);
-          this.$message.error("提交失败！");
-        }
-      } else {
-        try {
-          await this[types.UNRESOLVE_REPAIR](query);
-          this.$message.success("提交成功！");
-          this.details.status = "维修失败";
-          setSession("curOrder", this.details);
-        } catch (e) {
-          console.log(e);
-          this.$message.error("提交失败！");
-        }
-      }
-    }
+      this.$confirm("此操作将改变此工单的状态, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          let query = {
+            workId: this.details.id,
+            content: this.content,
+          };
+          if (this.resolved) {
+            try {
+               this[types.RESOLVE_REPAIR](query);
+              this.$message.success("提交成功！");
+              this.details.status = "已经完成";
+              setSession("curOrder", this.details);
+              this.$router.push("/repair")
+            } catch (e) {
+              console.log(e);
+              this.$message.error("提交失败！");
+            }
+          } else {
+            try {
+               this[types.UNRESOLVE_REPAIR](query);
+              this.$message.success("提交成功！");
+              this.details.status = "维修失败";
+              setSession("curOrder", this.details);
+                 this.$router.push("/repair")
+            } catch (e) {
+              console.log(e);
+              this.$message.error("提交失败！");
+            }
+          }
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消操作",
+          });
+        });
+    },
   },
- 
 };
 </script>
 

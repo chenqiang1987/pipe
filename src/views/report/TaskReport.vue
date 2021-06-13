@@ -126,7 +126,9 @@ export default {
           },
         ],
       },
-      tableData: [
+      tableData: {
+        
+      }
        
     };
   },

@@ -27,10 +27,23 @@
       </el-form-item>
       <el-form-item>
         <el-checkbox-group v-model="owner" @change="onChangeFilter">
-          <el-checkbox-button v-for="o in ownerTypes" :label="o.value" :key="o.value">{{o.label}}</el-checkbox-button>
+          <el-checkbox-button
+            v-for="o in ownerTypes"
+            :label="o.value"
+            :key="o.value"
+            >{{ o.label }}</el-checkbox-button
+          >
         </el-checkbox-group>
       </el-form-item>
-      <el-button icon="el-icon-plus" @click="addVisible = true; resetForm()" class="add-btn">添加</el-button>
+      <el-button
+        icon="el-icon-plus"
+        @click="
+          addVisible = true;
+          resetForm();
+        "
+        class="add-btn"
+        >添加</el-button
+      >
     </el-form>
 
     <el-table
@@ -38,6 +51,7 @@
       stripe
       style="width: 100vw"
       max-height="620"
+    
       @filter-change="filterByStatus"
     >
       <el-table-column prop="pic" label="图片" align="center">
@@ -58,16 +72,47 @@
             type="text"
             v-if="scope.row.vedioUrl"
             @click="viewVideo(scope.row.vedioUrl)"
-          >查看视频</el-button>
+            >查看视频</el-button
+          >
           <span v-else>暂无视频</span>
         </template>
       </el-table-column>
-      <el-table-column prop="type" label="类型" align="center"></el-table-column>
-      <el-table-column prop="exeName" label="执行人" align="center"></el-table-column>
-      <el-table-column prop="content" label="内容" align="center"></el-table-column>
-      <el-table-column prop="start" label="开始时间" align="center"></el-table-column>
-      <el-table-column prop="end" label="结束时间" align="center"></el-table-column>
-      <el-table-column prop="repairName" label="维修人员" align="center"></el-table-column>
+      <el-table-column
+        prop="type"
+        label="类型"
+        align="center"
+      ></el-table-column>
+      <el-table-column
+        prop="exeName"
+        label="执行人"
+        align="center"
+      ></el-table-column>
+      <!--el-table-column
+        prop="content"
+        label="内容"
+        :formatter="ellipsis"
+        align="center"
+      ></el-table-column -->
+      <el-table-column
+        prop="createT"
+        label="创建时间"
+        align="center"
+      ></el-table-column>
+      <el-table-column
+        prop="start"
+        label="开始维修时间"
+        align="center"
+      ></el-table-column>
+      <el-table-column
+        prop="end"
+        label="结束维修时间"
+        align="center"
+      ></el-table-column>
+      <el-table-column
+        prop="repairName"
+        label="维修人员"
+        align="center"
+      ></el-table-column>
 
       <el-table-column
         prop="status"
@@ -80,16 +125,35 @@
       >
         <template slot-scope="scope">
           <el-tag
-            :type="scope.row.status === '等待维修' ? 'warning' : scope.row.status === '正在维修中' ? 'primary' : scope.row.status === '已经完成' ? 'success': 'danger'"
+            :type="
+              scope.row.status === '等待维修'
+                ? 'warning'
+                : scope.row.status === '正在维修中'
+                ? 'primary'
+                : scope.row.status === '已经完成'
+                ? 'success'
+                : 'danger'
+            "
             disable-transitions
-          >{{scope.row.status}}</el-tag>
+            >{{ scope.row.status }}</el-tag
+          >
         </template>
       </el-table-column>
-      <el-table-column prop="expert" label="协助专家" align="center"></el-table-column>
+      <el-table-column
+        prop="expert"
+        label="协助专家"
+        align="center"
+      ></el-table-column>
       <el-table-column width="300px" label="操作" align="center">
         <template slot-scope="scope">
-          <el-button size="mini" plain type="info" @click="viewProgress(scope.row)">维修进度</el-button>
-          <el-button size="mini" plain type="primary">编辑</el-button>
+          <el-button
+            size="mini"
+            plain
+            type="info"
+            @click="viewProgress(scope.row)"
+            >维修进度</el-button
+          >
+          <!-- <el-button size="mini" plain type="primary">编辑</el-button> -->
           <el-button size="mini" plain type="danger">删除</el-button>
         </template>
       </el-table-column>
@@ -106,13 +170,19 @@
       @current-change="onPageCurrentChange"
     ></el-pagination>
 
-    <el-dialog title="工单添加" :visible.sync="addVisible" :close-on-click-modal="false">
+    <el-dialog
+      title="工单添加"
+      :visible.sync="addVisible"
+      :close-on-click-modal="false"
+    >
       <el-form :model="uploadForm" ref="uploadForm">
         <el-form-item style="margin: 10px 0 50px 0">
           <el-row :gutter="20">
             <el-col :span="6">
               <el-avatar :size="90">
-                <img src="https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png" />
+                <img
+                  src="https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png"
+                />
               </el-avatar>
             </el-col>
             <el-col :span="15" style="text-align: center">
@@ -136,7 +206,9 @@
         <el-form-item
           label="类型"
           prop="faultCode"
-          :rules="[{ required: true, message: '请选择类型', trigger: ['blur']}]"
+          :rules="[
+            { required: true, message: '请选择类型', trigger: ['blur'] },
+          ]"
         >
           <el-select v-model="uploadForm.faultCode" placeholder="请选择类型">
             <el-option
@@ -170,12 +242,14 @@
         <el-form-item
           label="内容"
           prop="content"
-          :rules="[{ required: true, message: '请输入内容', trigger: ['blur']}]"
+          :rules="[
+            { required: true, message: '请输入内容', trigger: ['blur'] },
+          ]"
         >
           <el-input
             type="textarea"
             v-model="uploadForm.content"
-            :autosize="{ minRows: 5, maxRows: 10}"
+            :autosize="{ minRows: 5, maxRows: 10 }"
             placeholder="输入损坏位置信息"
           ></el-input>
         </el-form-item>
@@ -186,7 +260,12 @@
       </div>
     </el-dialog>
 
-    <el-dialog title="故障视频" :visible.sync="videoVisible" center :close-on-click-modal="false">
+    <el-dialog
+      title="故障视频"
+      :visible.sync="videoVisible"
+      center
+      :close-on-click-modal="false"
+    >
       <video-player
         class="video-player vjs-custom-skin"
         ref="videoPlayer"
@@ -274,6 +353,7 @@ export default {
       },
       fileList: [],
       status: [],
+
       repairStatus: [
         {
           text: "等待维修",
@@ -334,10 +414,8 @@ export default {
       await this[types.GET_MAINTAIN_LIST](this.filter);
       await this[[types.GET_ALL_USERS]]({ roleId: 2 });
     } catch (e) {
-
-      if(e.msg.lastIndexOf("重新登陆")!=-1)
-        this.$router.push("/login");
-      this.$message.error(e.msg)
+      if (e.msg.lastIndexOf("重新登陆") != -1) this.$router.push("/login");
+      this.$message.error(e.msg);
     }
   },
   methods: {
@@ -391,7 +469,6 @@ export default {
         repairId: this.filter.repairId,
       };
       this[types.GET_MAINTAIN_LIST](filter).catch((e) => {
-
         this.$message.error(e.msg);
       });
     },
@@ -472,6 +549,15 @@ export default {
       this.$router.push("/repair/repairProgress");
       this[types.CUR_MAINTAIN_ORDER](row);
       setSession("curOrder", row);
+    },
+    ellipsis(row, column) {
+      let value = row.content;
+      let len = value.length;
+      if (!value) return "";
+      if (value.length > 20) {
+        return value.substring(0, 8) + "......" + value.substring(len - 8, len);
+      }
+      return value;
     },
   },
 };
